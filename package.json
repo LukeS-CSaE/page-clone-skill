@@ -1,15 +1,27 @@
 {
   "name": "page-clone",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "从浏览器标签页提取完整 HTML + CSS，生成 1:1 高保真静态页面克隆",
   "main": "scripts/clone.js",
   "bin": {
     "page-clone": "scripts/clone.js",
     "list-pages": "scripts/list-pages.js"
   },
+  "files": [
+    "scripts/",
+    "docs/",
+    "examples/",
+    "SKILL.md",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "scripts": {
     "clone": "node scripts/clone.js",
-    "list": "node scripts/list-pages.js"
+    "list": "node scripts/list-pages.js",
+    "mcp": "node scripts/mcp-server.js",
+    "prepublishOnly": "npm test",
+    "test": "node -e \"console.log('No tests yet')\""
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.32.2",
@@ -25,8 +37,18 @@
     "browser-automation",
     "chrome-devtools",
     "high-fidelity",
-    "prototype"
+    "prototype",
+    "mcp",
+    "skill"
   ],
   "author": "AI Assistant",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://gitee.com/moresecleft/page-clone-skill.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
 }

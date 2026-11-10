@@ -5,7 +5,7 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [Semantic Versioning](https://semver.org/lang/zh-CN/)。
 
-## [1.0.0] - 2026-01-10
+## [0.0.1] - 2026-01-10
 
 ### ✨ 新增
 
@@ -27,10 +27,10 @@
 
 ### 📚 文档
 
-- README.md - 项目介绍和快速开始
-- SKILL.md - Skill 定义和使用说明
-- docs/API.md - 详细的 API 文档
-- examples/basic-usage.js - 基础使用示例
+- README.md — 项目介绍和快速开始
+- SKILL.md — Skill 定义和使用说明
+- docs/API.md — 详细的 API 文档
+- examples/basic-usage.js — 基础使用示例
 
 ## [未发布]
 
@@ -45,4 +45,4 @@
 
 ---
 
-[1.0.0]: https://gitee.com/moresecleft/page-clone-skill/releases/v1.0.0
+[0.0.1]: https://gitee.com/moresecleft/page-clone-skill/releases/v0.0.1

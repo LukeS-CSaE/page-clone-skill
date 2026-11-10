@@ -1,25 +1,26 @@
-# Page Clone Skill
+# Page Clone
 
 > 从浏览器标签页提取完整 HTML + CSS，生成 1:1 高保真静态页面克隆
 
-[![npm version](https://img.shields.io/npm/v/@moresec/page-clone-skill.svg)](https://www.npmjs.com/package/@moresec/page-clone-skill)
+[![Version](https://img.shields.io/badge/version-0.0.1-blue.svg)](https://gitee.com/moresecleft/page-clone-skill)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D16.0.0-green.svg)](https://nodejs.org/)
 
 ## ✨ 特性
 
-- 🎯 **1:1 高保真克隆** - 完整保留 HTML 结构 + CSS 样式
-- 🔍 **智能页面识别** - 支持 URL 匹配、页面 ID、自动检测
-- 📦 **多种输出格式** - 单文件、分离 HTML/CSS、组件级拆分
-- 🤖 **MCP 服务器** - 可作为 MCP 工具集成到 AI Agent
-- 🖥️ **跨浏览器支持** - Chrome、Edge、Tabbit 等 Chromium 浏览器
-- ⚡ **零配置启动** - 自动连接调试端口，一键克隆
+- 🎯 **1:1 高保真克隆** — 完整保留 HTML 结构 + CSS 样式
+- 🔍 **智能页面识别** — 支持 URL 关键词匹配、页面 ID 定位
+- 📦 **多种输出格式** — 单文件内联 CSS / HTML+CSS 分离
+- 🤖 **MCP 服务器模式** — 可作为 MCP 工具集成到 AI Agent（如 DSH）
+- 🖥️ **跨浏览器支持** — Chrome、Edge、Tabbit 等 Chromium 浏览器
+- ⚡ **零配置启动** — 自动连接调试端口，一键克隆
 
 ## 📦 安装
 
-### 全局安装（推荐）
+### 全局安装
 
 ```bash
-npm install -g @moresec/page-clone-skill
+npm install -g page-clone
 ```
 
 ### 本地安装
@@ -35,6 +36,7 @@ npm install
 ### 1. 开启浏览器调试端口
 
 **Chrome:**
+
 ```bash
 # Windows
 "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222
@@ -52,7 +54,7 @@ Tabbit 默认自动开启调试端口（如未开启，重启时添加 `--remote
 # 列出所有打开的页面
 page-clone list
 
-# 克隆指定页面
+# 克隆指定页面（按页面 ID）
 page-clone clone --pageId 8 --output ./my-clone
 
 # 通过 URL 关键词克隆
@@ -97,8 +99,6 @@ ID  | Title        | URL
 
 克隆指定页面。
 
-**参数：**
-
 | 参数 | 类型 | 说明 | 默认值 |
 |------|------|------|--------|
 | `--pageId` | number | 浏览器标签页 ID | - |
@@ -107,43 +107,23 @@ ID  | Title        | URL
 | `--format` | string | 输出格式 (`single`/`separate`) | `single` |
 | `--port` | number | 调试端口 | `9222` |
 
-**示例：**
-
-```bash
-# 按页面 ID 克隆
-page-clone clone --pageId 8 --output ./sca-clone
-
-# 按 URL 关键词克隆
-page-clone clone --url "124.70.184.162" --output ./module-clone
-
-# 生成 HTML + CSS 分离格式
-page-clone clone --pageId 8 --format separate --output ./separate-clone
-```
-
 ### MCP 服务器模式
 
 作为 MCP 服务器运行，供 AI Agent 调用：
 
 ```bash
-page-clone mcp
-```
-
-或使用 npm script：
-
-```bash
-npm run mcp
+node scripts/mcp-server.js
 ```
 
 **MCP 工具：**
 
-- `list_pages` - 列出浏览器页面
-- `clone_page` - 克隆页面（支持 pageId 或 URL）
-- `clone_by_url` - 通过 URL 快速克隆
+- `list_pages` — 列出浏览器页面
+- `clone_page` — 克隆页面（支持 pageId 或 URL）
+- `clone_by_url` — 通过 URL 快速克隆
 
 **DSH 配置示例：**
 
 ```yaml
-# ~/.dsh/profiles/desktop/cordis.patch.yml
 - id: mcp-page-clone
   name: "@deepseek-ai/dsh-mcp-client"
   config:
@@ -194,7 +174,7 @@ output/
 ### 作为模块使用
 
 ```javascript
-const { clonePage, listPages } = require('@moresec/page-clone-skill');
+const { clonePage, listPages } = require('page-clone');
 
 // 列出页面
 const pages = await listPages({ port: 9222 });
@@ -211,10 +191,8 @@ console.log(result);
 
 ### 批量克隆
 
-创建 `batch-clone.js`:
-
 ```javascript
-const { clonePage } = require('@moresec/page-clone-skill');
+const { clonePage } = require('page-clone');
 
 const urls = [
   'https://example.com/page1',
@@ -275,11 +253,11 @@ curl http://127.0.0.1:9222/json/version
 
 **参数：**
 
-- `options.pageId` (number) - 页面 ID
-- `options.url` (string) - URL 关键词
-- `options.output` (string) - 输出目录
-- `options.format` (string) - 输出格式
-- `options.port` (number) - 调试端口
+- `options.pageId` (number) — 页面 ID
+- `options.url` (string) — URL 关键词
+- `options.output` (string) — 输出目录
+- `options.format` (string) — 输出格式
+- `options.port` (number) — 调试端口
 
 **返回值：** Promise\<CloneResult\>
 
@@ -302,7 +280,7 @@ interface CloneResult {
 
 **参数：**
 
-- `options.port` (number) - 调试端口
+- `options.port` (number) — 调试端口
 
 **返回值：** Promise\<PageInfo[]\>
 
