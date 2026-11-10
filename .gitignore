@@ -1,0 +1,22 @@
+node_modules/
+*.log
+.DS_Store
+.env
+.env.local
+.env.*.local
+
+# Output directories
+page-clone-output/
+test-clone/
+example-output/
+clones/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+desktop.ini

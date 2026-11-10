@@ -1,0 +1,32 @@
+{
+  "name": "page-clone",
+  "version": "1.0.0",
+  "description": "从浏览器标签页提取完整 HTML + CSS，生成 1:1 高保真静态页面克隆",
+  "main": "scripts/clone.js",
+  "bin": {
+    "page-clone": "scripts/clone.js",
+    "list-pages": "scripts/list-pages.js"
+  },
+  "scripts": {
+    "clone": "node scripts/clone.js",
+    "list": "node scripts/list-pages.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "chrome-devtools-mcp": ">=1.12.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "keywords": [
+    "page-clone",
+    "html-extract",
+    "css-extract",
+    "browser-automation",
+    "chrome-devtools",
+    "high-fidelity",
+    "prototype"
+  ],
+  "author": "AI Assistant",
+  "license": "MIT"
+}
