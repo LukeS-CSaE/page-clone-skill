@@ -1,6 +1,8 @@
 /**
  * 基础使用示例
  * 演示如何使用 page-clone-skill 克隆网页
+ *
+ * 运行：node examples/basic-usage.js
  */
 
 const { clonePage, listPages } = require('../scripts/clone.js');
@@ -18,8 +20,13 @@ async function main() {
     });
     console.log('');
 
+    if (pages.length === 0) {
+      console.log('没有可克隆的页面，请先在浏览器中登录并打开目标页面。');
+      return;
+    }
+
     // 步骤 2: 选择要克隆的页面
-    const targetPage = pages.find(p => !p.url.includes('about:blank')) || pages[0];
+    const targetPage = pages[0];
     console.log(`Step 2: Selected page "${targetPage.title}" (ID: ${targetPage.id})\n`);
 
     // 步骤 3: 克隆页面
@@ -33,13 +40,15 @@ async function main() {
     console.log('\n✅ Clone successful!');
     console.log(`Output directory: ${result.outputDir}`);
     console.log(`Files: ${result.files.join(', ')}`);
+    console.log('\n提示：产物包含登录后的真实业务数据，请按敏感文件对待。');
 
   } catch (error) {
     console.error('❌ Error:', error.message);
     console.log('\nTroubleshooting:');
     console.log('1. Make sure browser is running with --remote-debugging-port=9222');
-    console.log('2. Check if the page is loaded in the browser');
-    console.log('3. Verify chrome-devtools-mcp is installed: npm install -g chrome-devtools-mcp');
+    console.log('   (Chrome 136+ 还需要 --user-data-dir="<独立目录>"，否则该参数会被忽略)');
+    console.log('2. 在浏览器中人工登录，并确认目标页面已打开、内容已加载完');
+    console.log('3. Verify chrome-devtools-mcp is installed: npm install chrome-devtools-mcp');
   }
 }
 

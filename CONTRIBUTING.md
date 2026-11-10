@@ -112,7 +112,8 @@ describe('clonePage', () => {
 ## 文档
 
 - 更新 `README.md` 中的使用说明
-- 更新 `docs/API.md` 中的 API 文档
+- 更新 `references/api.md` 中的 API 文档
+- 更新 `SKILL.md` 中的执行流程（保持 YAML frontmatter 合法）
 - 添加 JSDoc 注释
 - 更新 `CHANGELOG.md`
 

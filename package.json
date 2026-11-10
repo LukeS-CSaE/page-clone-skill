@@ -1,6 +1,6 @@
 {
   "name": "page-clone",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "从浏览器标签页提取完整 HTML + CSS，生成 1:1 高保真静态页面克隆",
   "main": "scripts/clone.js",
   "bin": {
@@ -9,7 +9,7 @@
   },
   "files": [
     "scripts/",
-    "docs/",
+    "references/",
     "examples/",
     "SKILL.md",
     "README.md",
@@ -28,7 +28,7 @@
     "chrome-devtools-mcp": ">=1.12.0"
   },
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=20.19.0"
   },
   "keywords": [
     "page-clone",

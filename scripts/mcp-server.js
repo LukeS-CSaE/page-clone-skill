@@ -7,13 +7,10 @@
 const { Server } = require('@modelcontextprotocol/sdk/server/index.js');
 const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio.js');
 const { ListToolsRequestSchema, CallToolRequestSchema } = require('@modelcontextprotocol/sdk/types.js');
-const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
 const SKILL_DIR = path.resolve(__dirname, '..');
-const CLONE_SCRIPT = path.join(SKILL_DIR, 'scripts', 'clone.js');
-const LIST_SCRIPT = path.join(SKILL_DIR, 'scripts', 'list-pages.js');
 
 // 创建 MCP 服务器
 const server = new Server(
@@ -24,7 +21,7 @@ const server = new Server(
   {
     capabilities: {
       tools: {},
-    },
+    }
   }
 );
 
@@ -87,12 +84,18 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {
             url: {
               type: 'string',
-              description: 'URL 关键词（如 "124.70.184.162" 或 "example.com"）',
+              description: 'URL 关键词（如 "example.com"）',
             },
             output: {
               type: 'string',
               description: '输出目录路径',
               default: './page-clone-output',
+            },
+            format: {
+              type: 'string',
+              enum: ['single', 'separate'],
+              description: '输出格式：single=单文件，separate=HTML+CSS分离',
+              default: 'single',
             },
             port: {
               type: 'number',
@@ -109,19 +112,22 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 
 // 处理工具调用
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  const { name, arguments: args } = request.params;
+  const { name, arguments: args = {} } = request.params;
 
   try {
+    // 延迟 require，避免模块加载期就建立 MCP 连接
+    const { clonePage, listPages } = require('./clone.js');
+
     switch (name) {
       case 'list_pages': {
-        const result = await runScript(LIST_SCRIPT, [
-          '--port', String(args.port || 9222)
-        ]);
+        const pages = await listPages({ port: args.port || 9222 });
+
+        const lines = pages.map(p => `[${p.id}] ${p.title} - ${p.url}`);
         return {
           content: [
             {
               type: 'text',
-              text: result,
+              text: `Found ${pages.length} pages:\n${lines.join('\n')}`,
             },
           ],
         };
@@ -129,39 +135,21 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
       case 'clone_page':
       case 'clone_by_url': {
-        const scriptArgs = [];
-        
-        if (args.pageId) {
-          scriptArgs.push('--pageId', String(args.pageId));
-        }
-        if (args.url) {
-          scriptArgs.push('--url', args.url);
-        }
-        if (args.output) {
-          scriptArgs.push('--output', args.output);
-        }
-        if (args.format) {
-          scriptArgs.push('--format', args.format);
-        }
-        if (args.port) {
-          scriptArgs.push('--port', String(args.port));
-        }
+        const result = await clonePage({
+          pageId: args.pageId,
+          url: args.url,
+          output: args.output,
+          format: args.format,
+          port: args.port || 9222,
+        });
 
-        const result = await runScript(CLONE_SCRIPT, scriptArgs);
-        
-        // 读取元数据
-        const metadataPath = path.join(args.output || './page-clone-output', 'metadata.json');
-        let metadataText = '';
-        if (fs.existsSync(metadataPath)) {
-          const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf8'));
-          metadataText = '\n\n📋 Metadata:\n' + JSON.stringify(metadata, null, 2);
-        }
+        const metadataText = '\n\n📋 Metadata:\n' + JSON.stringify(result.metadata, null, 2);
 
         return {
           content: [
             {
               type: 'text',
-              text: result + metadataText,
+              text: `✅ Clone complete!\nOutput: ${result.outputDir}\nFiles:\n${result.files.join('\n')}${metadataText}`,
             },
           ],
         };
@@ -182,42 +170,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     };
   }
 });
-
-// 运行脚本的辅助函数
-function runScript(scriptPath, args) {
-  return new Promise((resolve, reject) => {
-    const proc = spawn('node', [scriptPath, ...args], {
-      stdio: ['pipe', 'pipe', 'pipe'],
-    });
-
-    let stdout = '';
-    let stderr = '';
-
-    proc.stdout.on('data', (data) => {
-      stdout += data.toString();
-    });
-
-    proc.stderr.on('data', (data) => {
-      const s = data.toString();
-      // 过滤掉非错误信息
-      if (!s.includes('usage statistics') && !s.includes('exposes content')) {
-        stderr += s;
-      }
-    });
-
-    proc.on('close', (code) => {
-      if (code === 0) {
-        resolve(stdout);
-      } else {
-        reject(new Error(`Script failed with code ${code}: ${stderr}`));
-      }
-    });
-
-    proc.on('error', (err) => {
-      reject(err);
-    });
-  });
-}
 
 // 启动服务器
 async function main() {
