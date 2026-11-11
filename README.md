@@ -271,3 +271,4 @@ for (const url of urls) {
 
 - [Chrome DevTools MCP](https://github.com/ChromeDevTools/chrome-devtools-mcp)
 - [Model Context Protocol](https://modelcontextprotocol.io/)
+
