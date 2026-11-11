@@ -113,6 +113,7 @@ node scripts/clone.js --pageId 8 --format separate --output ./my-clone
 1. 读 `metadata.json`，确认 `url` 与 `title` 是目标页面，`sizes.css` 不为 0
 2. 打开生成的 HTML，核对内容——**重点确认抓到的是登录后的页面，而不是登录页**
 3. 若 `sizes.css` 明显偏小，说明存在跨域样式表未取到 —— 见下方「已知限制」
+4. 输出目录以原网页的 `name` 属性命名，若不满意可改名，但不要随意改动目录结构
 
 ## 输出结构
 
@@ -120,7 +121,7 @@ node scripts/clone.js --pageId 8 --format separate --output ./my-clone
 
 ```
 output/
-├── clone.html          # 独立 HTML，CSS 内联在 <style> 中
+├── pagename.html          # 独立 HTML，CSS 内联在 <style> 中，明明要和原网页的name属性保持一致
 ├── screenshot.png      # 页面截图
 └── metadata.json       # url / title / clonedAt / format / sizes
 ```

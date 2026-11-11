@@ -1,6 +1,6 @@
 {
-  "name": "page-clone",
-  "version": "0.1.0",
+  "name": "page-clone-skill",
+  "version": "0.0.1",
   "description": "从浏览器标签页提取完整 HTML + CSS，生成 1:1 高保真静态页面克隆",
   "main": "scripts/clone.js",
   "bin": {
